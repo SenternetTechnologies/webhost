@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Senternet Hosting - Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f8fafc; }
+        .gradient-bg { background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <div class="gradient-bg rounded-2xl p-6 text-white shadow-lg mb-8">
+            <h1 class="text-2xl font-bold">Senternet Hosting Dashboard</h1>
+            <p class="text-indigo-100">Welcome back, Senthilkumar!</p>
+        </div>
+
+        <!-- Upload Form -->
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 mb-8">
+            <h2 class="text-lg font-bold text-slate-800 mb-4"><i class="fas fa-upload mr-2 text-indigo-600"></i>Deploy New App</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <input type="text" id="appName" placeholder="App Name (e.g., my-site)" class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none">
+                <input type="text" id="fileName" placeholder="File Name (e.g., index.html)" class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none">
+            </div>
+            <textarea id="content" placeholder="Paste your HTML/Code here..." class="w-full p-3 border rounded-xl mt-4 h-32 focus:ring-2 focus:ring-indigo-500 outline-none"></textarea>
+            <button onclick="uploadData()" class="w-full mt-4 bg-indigo-600 text-white py-3 rounded-xl font-bold hover:bg-indigo-700 transition">Deploy Now</button>
+        </div>
+
+        <!-- Status Card -->
+        <div id="status" class="hidden p-4 rounded-xl mb-8 text-center font-bold"></div>
+
+        <!-- Branding Footer -->
+        <div class="text-center text-slate-400 text-sm">
+            <p>© 2026 Senternet Technologies, Aranthangi</p>
+            <p class="mt-1">Need help? WhatsApp: +91 81900 38085</p>
+        </div>
+    </div>
+
+    <script>
+        function uploadData() {
+            const status = document.getElementById('status');
+            const appName = document.getElementById('appName').value;
+            const fileName = document.getElementById('fileName').value;
+            const content = document.getElementById('content').value;
+
+            if(!appName || !content) {
+                alert("Please fill in App Name and Content!");
+                return;
+            }
+
+            status.className = "p-4 rounded-xl mb-8 text-center font-bold bg-yellow-100 text-yellow-700";
+            status.innerHTML = "Deploying... Please wait.";
+            status.classList.remove('hidden');
+
+            google.script.run
+                .withSuccessHandler(function(res) {
+                    status.className = "p-4 rounded-xl mb-8 text-center font-bold bg-green-100 text-green-700";
+                    status.innerHTML = "Success! URL: <a href='" + res.shortUrl + "' target='_blank' class='underline'>" + res.shortUrl + "</a>";
+                })
+                .processUpload(appName, content, fileName);
+        }
+    </script>
+</body>
+</html>
